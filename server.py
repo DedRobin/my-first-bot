@@ -1,8 +1,6 @@
 from aiohttp import web
 
 from services import send_message
-from bots import run_bot
-
 routes = web.RouteTableDef()
 
 
@@ -18,5 +16,5 @@ async def index_get(request: web.Request) -> web.Response:
 if __name__ == "__main__":
     app = web.Application()
     app.add_routes(routes)
-    run_bot()
-    web.run_app(app, port=5000)
+    web.run_app(app, host="127.0.0.1", port=5000)
+

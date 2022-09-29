@@ -5,7 +5,7 @@ About
 -----
 
 
-Author: Pavel Rabekin<pavelrabekin@gmail.com>
+Author: Pavel Rabekin <pavelrabekin@gmail.com>
 
 Requirements:
 
