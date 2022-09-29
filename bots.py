@@ -5,7 +5,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 from services import start, message, most_expensive, most_popular
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def run_bot():
     app = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
     app.add_handler(CommandHandler("start", start))  # catch command "/start"
     app.add_handler(MessageHandler(~filters.COMMAND, message))  # catch all except commands
