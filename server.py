@@ -1,9 +1,10 @@
 from aiohttp import web
 
 from services import send_message
+from bots import run_bot
 
 routes = web.RouteTableDef()
-from bots import run_bot
+
 
 @routes.get("/")
 async def index_get(request: web.Request) -> web.Response:
