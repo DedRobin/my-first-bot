@@ -1,20 +1,32 @@
-from aiohttp import web
+from json import JSONDecodeError
 
+from aiohttp import web
+from marshmallow import ValidationError
+
+from schemas import MessageSchema
 from services import send_message
+
 routes = web.RouteTableDef()
 
 
-@routes.get("/")
+@routes.post("/")
 async def index_get(request: web.Request) -> web.Response:
-    message = request.rel_url.query.get("message")
-    if message is not None:
-        await send_message(f"{message}")
-        return web.json_response({"status": "sent"})
-    return web.json_response({"status": "error"})
+    try:
+        payload = await request.json()
+    except JSONDecodeError:
+        return web.json_response({"status": "Request data is invalid"})
+
+    try:
+        schema = MessageSchema()
+        data = schema.load(payload)
+    except ValidationError as e:
+        return web.json_response({"status": "Validation Error", "error": e.messages})
+
+    await send_message(data.get("message"), data.get("chat_id"))
+    return web.json_response({"status": "OK"})
 
 
 if __name__ == "__main__":
     app = web.Application()
     app.add_routes(routes)
-    web.run_app(app, host="127.0.0.1", port=5000)
-
+    web.run_app(app, port=5000)

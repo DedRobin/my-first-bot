@@ -12,3 +12,13 @@ services:
       - BOT_TOKEN=$BOT_TOKEN
     command: |
       python server.py
+#  my-first-bot-2:
+#    image: dedrobin/my-first-bot-2:latest
+#    ports:
+#      - "5000:5000"
+#    volumes:
+#      - ./:/app/
+#    environment:
+#      - BOT_TOKEN=$BOT_TOKEN
+#    command: |
+#      python bots.py
