@@ -2,21 +2,22 @@ version: '3.3'
 services:
   redis:
     image: redis:latest
+
   bot-server: &base_container
-    image: bot:latest
+    image: dedrobin/bot:latest
     ports:
       - "5000:5000"
     volumes:
       - ./:/app/
-    depends_on:
-      - redis
     environment:
       - BOT_TOKEN=$BOT_TOKEN
+      - REDIS_HOST=redis
     command: |
       python server.py
 
   handler:
     <<: *base_container
-    ports: [ ]
+    ports:
+      [ ]
     command: |
       python bots.py

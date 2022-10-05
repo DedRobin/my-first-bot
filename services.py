@@ -12,8 +12,9 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-redis = aioredis.from_url("redis://localhost")
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 
+redis = aioredis.from_url(f"redis://{REDIS_HOST}")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     first_name = update.effective_user.first_name
