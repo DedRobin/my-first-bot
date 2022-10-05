@@ -11,6 +11,7 @@ services:
       - ./:/app/
     environment:
       - BOT_TOKEN=$BOT_TOKEN
+      - CHAT_ID=$CHAT_ID
       - REDIS_HOST=redis
     command: |
       python server.py

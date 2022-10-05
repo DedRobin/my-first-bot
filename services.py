@@ -16,6 +16,7 @@ REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 
 redis = aioredis.from_url(f"redis://{REDIS_HOST}")
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     first_name = update.effective_user.first_name
     last_name = update.effective_user.last_name
@@ -37,7 +38,8 @@ async def message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     last_name = update.effective_user.last_name
     logger.info(
         f"Reply to message '{update.message.text}' (User={first_name} {last_name}, Chat ID={update.effective_chat.id})")
-    await update.message.reply_text(f"Message {update.effective_user.first_name}")
+    await redis.publish("messages", update.message.text)
+    # await update.message.reply_text(f"Message {update.effective_user.first_name}")
 
 
 async def send_message(text: str, chat_id: int) -> None:
@@ -86,3 +88,13 @@ async def popular_products(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     for i, product in enumerate(product_list["results"], 1):
         result += f"{i}) {product['title']} (Sold={product['sold']})\n"
     await update.message.reply_text(f"The popular products:\n{result}")
+
+
+async def redis_listener(ws):
+    async with redis.pubsub() as channel:
+        await channel.subscribe("messages")
+        async for response in channel.listen():
+            if isinstance(response.get("data"), bytes):
+                await ws.send_str(response.get("data").decode())
+            else:
+                await ws.send_str(f"Publish chanel {response.get('data')}")
