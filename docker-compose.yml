@@ -1,24 +1,22 @@
 version: '3.3'
 services:
-
-
-  my-first-bot:
-    image: dedrobin/my-first-bot:latest
+  redis:
+    image: redis:latest
+  bot-server: &base_container
+    image: bot:latest
     ports:
       - "5000:5000"
     volumes:
       - ./:/app/
+    depends_on:
+      - redis
     environment:
       - BOT_TOKEN=$BOT_TOKEN
     command: |
       python server.py
-#  my-first-bot-2:
-#    image: dedrobin/my-first-bot-2:latest
-#    ports:
-#      - "5000:5000"
-#    volumes:
-#      - ./:/app/
-#    environment:
-#      - BOT_TOKEN=$BOT_TOKEN
-#    command: |
-#      python bots.py
+
+  handler:
+    <<: *base_container
+    ports: [ ]
+    command: |
+      python bots.py

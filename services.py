@@ -1,11 +1,8 @@
-import logging
-import os
-import random
 import aiohttp
 import aioredis
-from telegram import Bot
-
-from telegram import Update
+import logging
+import os
+from telegram import Bot, Update
 from telegram.ext import ContextTypes
 
 logger = logging.getLogger(__name__)
