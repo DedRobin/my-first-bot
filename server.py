@@ -26,13 +26,13 @@ async def index_get(request: web.Request) -> web.Response:
     try:
         payload = await request.json()
     except JSONDecodeError:
-        return web.json_response({"status": "Request data is invalid"})
+        return web.json_response({"status": "Request data is invalid"}, status=415)
 
     try:
         schema = MessageSchema()
         data = schema.load(payload)
     except ValidationError as e:
-        return web.json_response({"status": "Validation Error", "error": e.messages})
+        return web.json_response({"status": "Validation Error", "error": e.messages}, status=400)
 
     await send_message(data.get("message"), data.get("chat_id"))
     return web.json_response({"status": "OK"})
@@ -56,11 +56,16 @@ async def websockets(request):
     return ws
 
 
-if __name__ == "__main__":
+def create_app():
     app = web.Application()
     setup_aiohttp_apispec(
         app=app, title="My-first-bot Bot documentation", version="v1.0",
         url="/api/docs/swagger.json", swagger_path="/api/docs",
     )
     app.add_routes(routes)
+    return app
+
+
+if __name__ == "__main__":
+    app = create_app()
     web.run_app(app, port=5000)
